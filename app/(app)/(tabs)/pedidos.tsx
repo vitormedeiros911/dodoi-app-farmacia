@@ -2,6 +2,7 @@ import ListItem from "@/components/ListItem";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
+import { useAuth } from "@/hooks/useAuth";
 import { useLoading } from "@/hooks/useLoading";
 import { api } from "@/services/api";
 import { formatBRLFromCents } from "@/utils/formatBRL";
@@ -29,18 +30,20 @@ export default function Pedidos() {
   const [refreshing, setRefreshing] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [pedidos, setPedidos] = useState<IPedido[]>([]);
+  const { startLoading, stopLoading } = useLoading();
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
+  const { session } = useAuth();
   const limit = 10;
 
   const colorScheme = useColorScheme();
   const styles = createColorScheme(colorScheme);
-  const { startLoading, stopLoading } = useLoading();
 
   const getPedidos = async (page: number = 0, append: boolean = false) => {
     try {
       const response = await api.get("pedido", {
         params: {
+          idFarmacia: session.user.idFarmacia,
           limit,
           skip: page * limit,
           orderBy: "createdAt",

@@ -80,6 +80,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         nome: usuario.nome,
         email: usuario.email,
         avatar: usuario.urlImagem,
+        idFarmacia: usuario.idFarmacia,
       };
 
       await updateSession({
@@ -87,29 +88,28 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         token: access_token,
       });
 
-      if (primeiroAcesso) {
-        router.navigate("/meus-dados");
-        Alert.alert(
-          "Bem-vindo ao Dodoi!",
-          "Como é a primeira vez conosco, precisamos que você complete seu cadastro antes de realizar qualquer pedido.",
-          [
-            {
-              text: "OK",
-              onPress: () => {},
-            },
-            {
-              text: "Completar depois",
-              onPress: () => router.navigate("/(app)/(tabs)"),
-            },
-          ]
-        );
-      } else if (access_token) router.navigate("/(app)/(tabs)");
+      if (!usuario.idFarmacia) {
+        router.navigate("/cadastrar-farmacia"),
+          Alert.alert(
+            "Bem-vindo ao Dodoi!",
+            "Como é a primeira vez conosco, precisamos que você cadastre sua farmácia antes de qualquer coisa.",
+            [
+              {
+                text: "OK",
+                onPress: () => {},
+              },
+            ]
+          );
+      } else router.navigate("/(app)/(tabs)");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const errorMessage =
           error.response?.data?.message || "Não foi possível realizar o login.";
         Alert.alert(errorMessage);
-      } else Alert.alert("Erro inesperado. Tente novamente.");
+      } else {
+        console.log(error);
+        Alert.alert("Erro inesperado. Tente novamente.");
+      }
     } finally {
       stopLoading();
     }

@@ -5,8 +5,8 @@ import { useHeader } from "@/hooks/useHeader";
 import getFirstName from "@/utils/getFirstName";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useRef } from "react";
-import { Animated, TouchableOpacity, useColorScheme } from "react-native";
+import React from "react";
+import { TouchableOpacity, useColorScheme } from "react-native";
 
 import ImageWithFallback from "../ImageWithFallback";
 import { ThemedText } from "../ThemedText";
@@ -21,10 +21,10 @@ export default function Header({ user }: HeaderProps) {
   const colorScheme = useColorScheme();
   const styles = createStyles(colorScheme);
 
-  const { headerContent, backIndicator } = useHeader();
+  const { headerContent, backIndicator, isVisible } = useHeader();
   const router = useRouter();
 
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+  if (!isVisible) return null;
 
   return (
     <ThemedView style={styles.container}>

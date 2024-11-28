@@ -3,4 +3,5 @@ export type UserDto = {
   nome: string;
   email: string;
   avatar: string;
+  idFarmacia: string;
 };

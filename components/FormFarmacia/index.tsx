@@ -2,154 +2,131 @@ import ScrollView from "@/components/ScrollView";
 import ThemedInput from "@/components/ThemedInput";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useHeader } from "@/hooks/useHeader";
-import { useLoading } from "@/hooks/useLoading";
-import { IUsuario } from "@/interfaces/usuario.interface";
-import { api } from "@/services/api";
-import { formatEndereco } from "@/utils/formatEndereco";
-import { showToast } from "@/utils/showToast";
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { TouchableOpacity, useColorScheme } from "react-native";
 import { TextInputMask } from "react-native-masked-text";
 
 import { createStyles } from "./styles";
+import { IFarmacia } from "@/interfaces/farmacia.interface";
+import { useEffect } from "react";
 
-type FormDataProps = {
+export type FormDataProps = {
   nome: string;
-  cpf: string;
-  email: string;
-  telefone: string;
-  dataNascimento: string;
+  razaoSocial: string;
+  cnpj: string;
+  emailAdmin: string;
+  urlImagem: string;
   cep: string;
+  uf: string;
+  cidade: string;
   logradouro: string;
   numero: string;
-  complemento: string;
   bairro: string;
-  cidade: string;
-  uf: string;
+  complemento: string;
 };
 
-export default function MeusDados() {
-  const { setBackIndicator } = useHeader();
-  const {
-    control,
-    setValue,
-    handleSubmit,
-    formState: { errors },
-    clearErrors,
-  } = useForm<FormDataProps>();
+type FormFarmaciaProps = {
+  title: string;
+  onSubmit: (data: FormDataProps) => Promise<void>;
+  onRefresh?: () => Promise<void>;
+  refreshing?: boolean;
+  farmacia?: IFarmacia;
+  clearErrors?: () => void;
+  setClearErrors?: (clearErrors: () => void) => void;
+};
+
+export default function FormFarmacia({
+  onSubmit,
+  title,
+  refreshing,
+  onRefresh,
+  farmacia,
+  clearErrors,
+  setClearErrors,
+}: FormFarmaciaProps) {
   const colorScheme = useColorScheme();
   const styles = createStyles(colorScheme);
-  const { startLoading, stopLoading } = useLoading();
-  const [refreshing, setRefreshing] = useState(false);
 
-  const getUsuario = async () => {
-    try {
-      const response = await api.get("/usuario/perfil");
-      const usuarioData = response.data as IUsuario;
-
-      setValue("nome", usuarioData.nome);
-      setValue("cpf", usuarioData.cpf);
-      setValue("email", usuarioData.email);
-      setValue("telefone", usuarioData.telefone);
-      setValue("dataNascimento", usuarioData.dataNascimento);
-
-      if (usuarioData.endereco) {
-        setValue("cep", usuarioData.endereco.cep);
-        setValue("logradouro", usuarioData.endereco.logradouro);
-        setValue("numero", usuarioData.endereco.numero);
-        setValue("complemento", usuarioData.endereco.complemento);
-        setValue("bairro", usuarioData.endereco.bairro);
-        setValue("cidade", usuarioData.endereco.cidade);
-        setValue("uf", usuarioData.endereco.uf);
-      }
-    } catch (error: any) {
-      showToast(error.response.data.message, "error");
-    }
-  };
-
-  const onSubmit = async (data: FormDataProps) => {
-    const endereco = formatEndereco(data);
-
-    try {
-      startLoading();
-      await api.put("/usuario", {
-        nome: data.nome,
-        cpf: data.cpf,
-        email: data.email,
-        telefone: data.telefone,
-        dataNascimento: data.dataNascimento,
-        endereco,
-      });
-
-      showToast("Dados atualizados com sucesso!", "success");
-    } catch (error: any) {
-      showToast(error.response.data.message, "error");
-    } finally {
-      stopLoading();
-    }
-  };
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    clearErrors: clearErrorsForm,
+    formState: { errors },
+  } = useForm<FormDataProps>();
 
   useEffect(() => {
-    const fetchUsuario = async () => {
-      startLoading();
-      await getUsuario();
-      stopLoading();
-    };
+    if (clearErrors && setClearErrors) setClearErrors(() => clearErrorsForm);
 
-    fetchUsuario();
-  }, []);
-
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await getUsuario();
-    clearErrors();
-    setRefreshing(false);
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      setBackIndicator(true);
-
-      return () => {
-        setBackIndicator(false);
-      };
-    }, [setBackIndicator])
-  );
+    if (farmacia) {
+      setValue("nome", farmacia.nome);
+      setValue("razaoSocial", farmacia.razaoSocial);
+      setValue("cnpj", farmacia.cnpj);
+      setValue("emailAdmin", farmacia.emailAdmin);
+      setValue("urlImagem", farmacia.urlImagem);
+      setValue("cep", farmacia.endereco?.cep);
+      setValue("uf", farmacia.endereco?.uf);
+      setValue("cidade", farmacia.endereco?.cidade);
+      setValue("logradouro", farmacia.endereco?.logradouro);
+      setValue("numero", farmacia.endereco?.numero);
+      setValue("bairro", farmacia.endereco?.bairro);
+      setValue("complemento", farmacia.endereco?.complemento);
+    }
+  }, [farmacia, setValue, clearErrorsForm, clearErrors, setClearErrors]);
 
   return (
-    <ScrollView
-      style={styles.container}
-      refreshing={refreshing}
-      onRefresh={handleRefresh}
-    >
+    <ScrollView refreshing={refreshing} onRefresh={onRefresh}>
       <ThemedView style={styles.form}>
-        <ThemedText style={styles.title}>Meus Dados</ThemedText>
+        <ThemedText style={styles.title}>{title}</ThemedText>
 
         <Controller
           control={control}
           name="nome"
-          rules={{ required: "Nome é obrigatório." }}
+          rules={{ required: "O nome é obrigatório." }}
           render={({ field: { onChange, value } }) => (
             <ThemedView>
               <ThemedText style={styles.label}>Nome*</ThemedText>
-              <ThemedInput value={value} onChangeText={onChange} />
+              <ThemedInput
+                placeholder="Digite o nome da farmácia"
+                value={value}
+                onChangeText={onChange}
+              />
             </ThemedView>
           )}
         />
+        {errors.nome && (
+          <ThemedText style={styles.error}>{errors.nome.message}</ThemedText>
+        )}
         <Controller
           control={control}
-          name="cpf"
-          rules={{ required: "CPF é obrigatório." }}
+          name="razaoSocial"
+          rules={{ required: "A razão social é obrigatória." }}
           render={({ field: { onChange, value } }) => (
             <ThemedView>
-              <ThemedText style={styles.label}>CPF*</ThemedText>
+              <ThemedText style={styles.label}>Razão Social*</ThemedText>
+              <ThemedInput
+                placeholder="Digite a razão social"
+                value={value}
+                onChangeText={onChange}
+              />
+            </ThemedView>
+          )}
+        />
+        {errors.razaoSocial && (
+          <ThemedText style={styles.error}>
+            {errors.razaoSocial.message}
+          </ThemedText>
+        )}
+        <Controller
+          control={control}
+          name="cnpj"
+          rules={{ required: "O CNPJ é obrigatório." }}
+          render={({ field: { onChange, value } }) => (
+            <ThemedView>
+              <ThemedText style={styles.label}>CNPJ*</ThemedText>
               <TextInputMask
-                type="cpf"
-                placeholder="Digite o seu CPF"
-                keyboardType="number-pad"
+                type={"cnpj"}
+                placeholder="Digite o CNPJ"
                 value={value}
                 onChangeText={onChange}
                 customTextInput={ThemedInput}
@@ -157,67 +134,52 @@ export default function MeusDados() {
             </ThemedView>
           )}
         />
-        {errors.cpf && (
-          <ThemedText style={styles.error}>{errors.cpf.message}</ThemedText>
+        {errors.cnpj && (
+          <ThemedText style={styles.error}>{errors.cnpj.message}</ThemedText>
         )}
 
         <Controller
           control={control}
-          name="email"
-          rules={{ required: "E-mail é obrigatório." }}
+          name="emailAdmin"
+          rules={{ required: "O e-mail do administrador é obrigatório." }}
           render={({ field: { onChange, value } }) => (
             <ThemedView>
               <ThemedText style={styles.label}>E-mail*</ThemedText>
               <ThemedInput
                 value={value}
                 onChangeText={onChange}
-                style={{ opacity: 0.5 }}
-                editable={false}
+                placeholder="Digite o e-mail do administrador"
               />
             </ThemedView>
           )}
         />
+        {errors.emailAdmin && (
+          <ThemedText style={styles.error}>
+            {errors.emailAdmin.message}
+          </ThemedText>
+        )}
 
         <Controller
           control={control}
-          name="telefone"
+          name="urlImagem"
+          rules={{ required: "Disponibilize uma foto para sua farmácia" }}
           render={({ field: { onChange, value } }) => (
             <ThemedView>
-              <ThemedText style={styles.label}>Telefone</ThemedText>
-              <TextInputMask
-                placeholder="Digite o telefone"
+              <ThemedText style={styles.label}>Foto*</ThemedText>
+              <ThemedInput
                 value={value}
                 onChangeText={onChange}
-                type={"cel-phone"}
-                options={{
-                  maskType: "BRL",
-                  withDDD: true,
-                  dddMask: "(99) ",
-                }}
-                customTextInput={ThemedInput}
+                placeholder="Digite a URL da imagem"
               />
             </ThemedView>
           )}
         />
-        <Controller
-          control={control}
-          name="dataNascimento"
-          render={({ field: { onChange, value } }) => (
-            <ThemedView>
-              <ThemedText style={styles.label}>Data de nascimento</ThemedText>
-              <TextInputMask
-                placeholder="DD/MM/AAAA"
-                value={value}
-                onChangeText={onChange}
-                type={"datetime"}
-                options={{
-                  format: "DD/MM/YYYY",
-                }}
-                customTextInput={ThemedInput}
-              />
-            </ThemedView>
-          )}
-        />
+        {errors.urlImagem && (
+          <ThemedText style={styles.error}>
+            {errors.urlImagem.message}
+          </ThemedText>
+        )}
+
         <ThemedText style={styles.title}>Endereço</ThemedText>
         <Controller
           control={control}

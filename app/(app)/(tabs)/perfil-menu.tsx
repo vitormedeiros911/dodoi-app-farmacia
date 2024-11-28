@@ -39,30 +39,25 @@ export default function MenuPerfil() {
           size={24}
           color={Colors[colorScheme ?? "light"].text}
         />
-        <ThemedText style={styles.menuText}>Meus Dados</ThemedText>
+        <ThemedText style={styles.menuText}>Meus dados</ThemedText>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.menuItem}>
+      <TouchableOpacity
+        style={styles.menuItem}
+        onPress={() => router.navigate("/dados-farmacia")}
+      >
         <Ionicons
-          name="card-outline"
+          name="storefront-outline"
           size={24}
           color={Colors[colorScheme ?? "light"].text}
         />
-        <ThemedText style={styles.menuText}>Cobrança</ThemedText>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.menuItem} onPress={() => signOut()}>
-        <Ionicons
-          name="log-out-outline"
-          size={24}
-          color={Colors[colorScheme ?? "light"].text}
-        />
-        <ThemedText style={styles.menuText}>Sair</ThemedText>
+        <ThemedText style={styles.menuText}>Dados da farmácia</ThemedText>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.menuItem}
         onPress={() => setModalVisible(true)}
       >
         <Ionicons
-          name="close-circle-outline"
+          name="lock-closed-outline"
           size={24}
           color={Colors[colorScheme ?? "light"].text}
         />
@@ -102,6 +97,14 @@ export default function MenuPerfil() {
           </View>
         </View>
       </Modal>
+      <TouchableOpacity style={styles.menuItem} onPress={() => signOut()}>
+        <Ionicons
+          name="log-out-outline"
+          size={24}
+          color={Colors[colorScheme ?? "light"].text}
+        />
+        <ThemedText style={styles.menuText}>Sair</ThemedText>
+      </TouchableOpacity>
     </ThemedView>
   );
 }
