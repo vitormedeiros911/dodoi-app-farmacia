@@ -6,7 +6,6 @@ import { api } from "@/services/api";
 import { formatEndereco } from "@/utils/formatEndereco";
 import { showToast } from "@/utils/showToast";
 import { useFocusEffect } from "@react-navigation/native";
-import { router } from "expo-router";
 import { useCallback } from "react";
 import { useColorScheme } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,7 +17,6 @@ export default function CadastrarFarmacia() {
   const colorScheme = useColorScheme();
   const styles = createStyles(colorScheme);
   const { startLoading, stopLoading } = useLoading();
-  const { session } = useAuth();
 
   const onSubmit = async (data: FormDataProps) => {
     try {
