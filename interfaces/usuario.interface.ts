@@ -1,10 +1,12 @@
 export interface IUsuario {
-  id: number;
+  id: string;
   nome: string;
   cpf: string;
   email: string;
   telefone: string;
   dataNascimento: string;
+  urlImagem: string;
+  idFarmacia: string;
   endereco: {
     cep: string;
     logradouro: string;

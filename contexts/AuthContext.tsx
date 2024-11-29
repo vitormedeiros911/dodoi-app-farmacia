@@ -15,6 +15,7 @@ export type AuthContextDataProps = {
   session: SessionStorageDto;
   signIn: () => void;
   signOut: () => void;
+  updateSession: (newSession: SessionStorageDto) => Promise<void>;
 };
 
 type AuthContextProviderProps = {
@@ -32,10 +33,11 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
   const { startLoading, stopLoading } = useLoading();
 
-  const updateSession = async (newSession: SessionStorageDto) => {
+  async function updateSession(newSession: SessionStorageDto) {
     setSession(newSession);
     await storageUserSave(newSession.user, newSession.token);
-  };
+    api.defaults.headers.token = newSession.token;
+  }
 
   async function signIn() {
     try {
@@ -49,7 +51,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       const idToken = googleResponse.data.idToken;
       const response = await api.post("/auth/login", { idToken });
 
-      const { usuario, access_token, primeiroAcesso } = response.data;
+      const { usuario, access_token } = response.data;
 
       if (usuario.status === "INATIVO") {
         const reativarPerfil = async () => {
@@ -143,7 +145,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ session, signIn, signOut }}>
+    <AuthContext.Provider value={{ session, signIn, signOut, updateSession }}>
       {children}
     </AuthContext.Provider>
   );
