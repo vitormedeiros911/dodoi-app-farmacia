@@ -12,7 +12,7 @@ import { api } from "@/services/api";
 import { formatBRL } from "@/utils/formatBRL";
 import { showToast } from "@/utils/showToast";
 import { Ionicons } from "@expo/vector-icons";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { debounce } from "lodash";
 import React, { useCallback, useEffect, useState } from "react";
 import {
@@ -129,8 +129,10 @@ export default function Produtos() {
 
   const debouncedSearch = useCallback(
     debounce(async (value: string) => {
+      startLoading();
       setPage(0);
       await getProdutos(0, false, value);
+      stopLoading();
     }, 300),
     []
   );
@@ -138,11 +140,15 @@ export default function Produtos() {
   useEffect(() => {
     debouncedSearch(busca);
   }, [busca, debouncedSearch]);
+
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.header}>
         <ThemedText style={styles.title}>Meus produtos</ThemedText>
-        <Button style={styles.button}>
+        <Button
+          style={styles.button}
+          onPress={() => router.navigate("/produto/cadastrar")}
+        >
           <ThemedText>Adicionar</ThemedText>
         </Button>
       </ThemedView>

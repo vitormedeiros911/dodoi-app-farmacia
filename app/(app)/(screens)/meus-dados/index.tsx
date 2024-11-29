@@ -71,10 +71,11 @@ export default function MeusDados() {
   };
 
   const onSubmit = async (data: FormDataProps) => {
-    const endereco = formatEndereco(data);
-
     try {
       startLoading();
+
+      const endereco = formatEndereco(data);
+
       await api.put("/usuario", {
         nome: data.nome,
         cpf: data.cpf,

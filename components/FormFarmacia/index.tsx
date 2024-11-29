@@ -128,6 +128,7 @@ export default function FormFarmacia({
                 type={"cnpj"}
                 placeholder="Digite o CNPJ"
                 value={value}
+                keyboardType="numeric"
                 onChangeText={onChange}
                 customTextInput={ThemedInput}
               />
@@ -280,6 +281,7 @@ export default function FormFarmacia({
               <ThemedInput
                 placeholder="Digite o número do endereço"
                 value={value}
+                keyboardType="numeric"
                 onChangeText={onChange}
               />
             </ThemedView>

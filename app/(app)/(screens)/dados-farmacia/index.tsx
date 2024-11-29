@@ -42,7 +42,7 @@ export default function DadosFarmacia() {
 
     try {
       startLoading();
-      await api.put("/farmacia", {
+      await api.put(`/farmacia/${session.user.idFarmacia}`, {
         nome: data.nome,
         razaoSocial: data.razaoSocial,
         cnpj: data.cnpj,
