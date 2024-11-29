@@ -1,7 +1,7 @@
 import Button from "@/components/Button";
 import ImageWithFallback from "@/components/ImageWithFallback";
-import ListItem from "@/components/ListItem";
 import SearchInput from "@/components/SearchInput";
+import SwipeableListItem from "@/components/SwipeableListItem";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
@@ -11,12 +11,12 @@ import { useLoading } from "@/hooks/useLoading";
 import { api } from "@/services/api";
 import { formatBRL } from "@/utils/formatBRL";
 import { showToast } from "@/utils/showToast";
-import { Ionicons } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
 import { debounce } from "lodash";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   ColorSchemeName,
   FlatList,
   StyleSheet,
@@ -33,7 +33,7 @@ interface IProduto {
   createdAt: Date;
 }
 
-const MemoizedListItem = React.memo(ListItem);
+const MemoizedListItem = React.memo(SwipeableListItem);
 const MemoizedImageWithFallback = React.memo(ImageWithFallback);
 
 export default function Produtos() {
@@ -90,6 +90,34 @@ export default function Produtos() {
         "error"
       );
     }
+  };
+
+  const handleDeleteProduto = async (id: string) => {
+    const deleteProduto = async (id: string) => {
+      try {
+        await api.delete(`produto/${id}`);
+        setProdutos((prevProdutos) =>
+          prevProdutos.filter((produto) => produto.id !== id)
+        );
+        showToast("Produto excluído com sucesso", "success");
+      } catch (error: any) {
+        showToast(
+          error.response?.data?.message || "Erro ao excluir produto",
+          "error"
+        );
+      }
+    };
+
+    Alert.alert("Excluir produto", "Deseja realmente excluir este produto?", [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Excluir",
+        onPress: async () => await deleteProduto(id),
+      },
+    ]);
   };
 
   const handleRefresh = async () => {
@@ -162,30 +190,29 @@ export default function Produtos() {
         onEndReachedThreshold={0.3}
         style={styles.list}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <MemoizedListItem onPress={() => {}} style={styles.listItem}>
+        renderItem={({ item: produto }) => (
+          <MemoizedListItem
+            style={styles.listItem}
+            onDeletePress={() => handleDeleteProduto(produto.id)}
+            onEditPress={() => router.navigate(`/produto/${produto.id}`)}
+          >
             <MemoizedImageWithFallback
-              source={{ uri: item.urlImagem }}
+              source={{ uri: produto.urlImagem }}
               fallbackSource={require("@/assets/images/remedioGenericoImg.jpg")}
               style={styles.listItemImage}
             />
-
             <View style={styles.listItemDescription}>
-              <ThemedText style={styles.detailsTitle}>{item.nome}</ThemedText>
+              <ThemedText style={styles.detailsTitle}>
+                {produto.nome}
+              </ThemedText>
 
               <ThemedText style={styles.detailsText}>
-                Quantidade disponível: {item.quantidadeDisponivel}
+                Quantidade disponível: {produto.quantidadeDisponivel}
               </ThemedText>
               <ThemedText style={styles.detailsText}>
-                {formatBRL(item.precoUnitario)}
+                {formatBRL(produto.precoUnitario)}
               </ThemedText>
             </View>
-            <Ionicons
-              name="create-outline"
-              size={24}
-              color={Colors.mainColor}
-              style={{ marginLeft: "auto", marginRight: 20 }}
-            />
           </MemoizedListItem>
         )}
         ListEmptyComponent={<ThemedText>Nenhum produto encontrado</ThemedText>}

@@ -15,6 +15,7 @@ import { TouchableOpacity, useColorScheme } from "react-native";
 import { TextInputMask } from "react-native-masked-text";
 
 import { createStyles } from "./styles";
+import { formatDate } from "../../../../utils/formatDate";
 
 type FormDataProps = {
   nome: string;
@@ -54,7 +55,7 @@ export default function MeusDados() {
       setValue("cpf", usuarioData.cpf);
       setValue("email", usuarioData.email);
       setValue("telefone", usuarioData.telefone);
-      setValue("dataNascimento", usuarioData.dataNascimento);
+      setValue("dataNascimento", formatDate(usuarioData.dataNascimento));
 
       if (usuarioData.endereco) {
         setValue("cep", usuarioData.endereco.cep);
@@ -74,6 +75,15 @@ export default function MeusDados() {
     try {
       startLoading();
 
+      let formattedDate;
+      if (data.dataNascimento) {
+        const dia = data.dataNascimento.substring(0, 2);
+        const mes = data.dataNascimento.substring(3, 5);
+        const ano = data.dataNascimento.substring(6, 10);
+
+        formattedDate = `${ano}-${mes}-${dia}`;
+      }
+
       const endereco = formatEndereco(data);
 
       await api.put("/usuario", {
@@ -81,7 +91,7 @@ export default function MeusDados() {
         cpf: data.cpf,
         email: data.email,
         telefone: data.telefone,
-        dataNascimento: data.dataNascimento,
+        dataNascimento: formattedDate,
         endereco,
       });
 
@@ -210,7 +220,7 @@ export default function MeusDados() {
                 placeholder="DD/MM/AAAA"
                 value={value}
                 onChangeText={onChange}
-                type={"datetime"}
+                type="datetime"
                 options={{
                   format: "DD/MM/YYYY",
                 }}
@@ -219,6 +229,7 @@ export default function MeusDados() {
             </ThemedView>
           )}
         />
+
         <ThemedText style={styles.title}>Endereço</ThemedText>
         <Controller
           control={control}

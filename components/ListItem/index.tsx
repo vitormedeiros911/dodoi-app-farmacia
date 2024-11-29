@@ -1,6 +1,5 @@
 import { TouchableOpacity, useColorScheme } from "react-native";
 
-import { ThemedView } from "../ThemedView";
 import { createStyles } from "./styles";
 
 type ListItemProps = {
