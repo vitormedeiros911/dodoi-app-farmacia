@@ -55,6 +55,18 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="produtos"
+        options={{
+          title: "Produtos",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "bandage" : "bandage-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="perfil-menu"
         options={{
           title: "Perfil",

@@ -1,5 +1,5 @@
 import googleIcon from "@/assets/images/google-icon.png";
-import handsImgBg from "@/assets/images/handsImgBg.jpg";
+import farmaciaBg from "@/assets/images/farmaciaBg.jpg";
 import logo from "@/assets/images/logo.png";
 import Button from "@/components/Button";
 import { useAuth } from "@/hooks/useAuth";
@@ -26,7 +26,7 @@ export default function Login() {
   };
 
   return (
-    <ImageBackground source={handsImgBg} style={styles.imgBg}>
+    <ImageBackground source={farmaciaBg} style={styles.imgBg}>
       <View style={styles.overlay} />
       <View style={styles.content}>
         <Image source={logo} style={styles.logo} />
