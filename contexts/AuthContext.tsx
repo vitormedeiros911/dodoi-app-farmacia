@@ -109,7 +109,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
           error.response?.data?.message || "Não foi possível realizar o login.";
         Alert.alert(errorMessage);
       } else {
-        console.log(error);
         Alert.alert("Erro inesperado. Tente novamente.");
       }
     } finally {
