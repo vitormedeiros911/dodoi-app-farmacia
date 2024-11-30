@@ -26,14 +26,11 @@ export default function DadosFarmacia() {
 
   const getFarmacia = async () => {
     try {
-      startLoading();
       const response = await api.get(`/farmacia/${session.user.idFarmacia}`);
 
       setFarmacia(response.data);
     } catch (error: any) {
       showToast(error.response.data.message, "error");
-    } finally {
-      stopLoading();
     }
   };
 

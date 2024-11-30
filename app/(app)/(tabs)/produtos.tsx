@@ -175,7 +175,7 @@ export default function Produtos() {
         <ThemedText style={styles.title}>Meus produtos</ThemedText>
         <Button
           style={styles.button}
-          onPress={() => router.navigate("/produto/cadastrar")}
+          onPress={() => router.navigate("/produto")}
         >
           <ThemedText>Adicionar</ThemedText>
         </Button>
@@ -190,6 +190,11 @@ export default function Produtos() {
         onEndReachedThreshold={0.3}
         style={styles.list}
         showsVerticalScrollIndicator={false}
+        getItemLayout={(_, index) => ({
+          length: total,
+          offset: total * index,
+          index,
+        })}
         renderItem={({ item: produto }) => (
           <MemoizedListItem
             style={styles.listItem}

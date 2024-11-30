@@ -3,12 +3,13 @@ import ThemedInput from "@/components/ThemedInput";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { IProduto } from "@/interfaces/produto.interface";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { TouchableOpacity, useColorScheme } from "react-native";
+import { Image, TouchableOpacity, useColorScheme } from "react-native";
 import { TextInputMask } from "react-native-masked-text";
 
 import { createStyles } from "./styles";
+import ImageWithFallback from "../ImageWithFallback";
 
 export type FormDataProps = {
   nome: string;
@@ -39,6 +40,7 @@ export default function FormProduto({
 }: FormProdutoProps) {
   const colorScheme = useColorScheme();
   const styles = createStyles(colorScheme);
+  const [source, setSource] = useState(produto?.urlImagem);
 
   const {
     control,
@@ -52,11 +54,15 @@ export default function FormProduto({
     if (clearErrors && setClearErrors) setClearErrors(() => clearErrorsForm);
 
     if (produto) {
+      setSource(produto.urlImagem);
       setValue("nome", produto.nome);
       setValue("descricao", produto.descricao);
       setValue("urlImagem", produto.urlImagem);
-      setValue("precoUnitario", produto.precoUnitario.toString());
-      setValue("quantidadeDisponivel", produto.quantidadeDisponivel.toString());
+      setValue("precoUnitario", produto.precoUnitario?.toFixed(2));
+      setValue(
+        "quantidadeDisponivel",
+        produto.quantidadeDisponivel?.toString()
+      );
     }
   }, [produto, setValue, clearErrorsForm, clearErrors, setClearErrors]);
 
@@ -152,15 +158,24 @@ export default function FormProduto({
           </ThemedText>
         )}
 
+        <ThemedText style={styles.label}>Foto do produto</ThemedText>
+        <ImageWithFallback
+          source={{ uri: source }}
+          fallbackSource={require("@/assets/images/remedioGenericoImg.jpg")}
+          style={styles.image}
+        />
+
         <Controller
           control={control}
           name="urlImagem"
           render={({ field: { onChange, value } }) => (
             <ThemedView>
-              <ThemedText style={styles.label}>Foto</ThemedText>
               <ThemedInput
                 value={value}
-                onChangeText={onChange}
+                onChangeText={(text) => {
+                  setSource(text);
+                  onChange(text);
+                }}
                 placeholder="Digite a URL da imagem"
               />
             </ThemedView>

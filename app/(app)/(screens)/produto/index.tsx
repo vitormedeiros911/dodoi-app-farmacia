@@ -10,6 +10,7 @@ import { useCallback } from "react";
 import { useColorScheme } from "react-native";
 
 import { createStyles } from "./styles";
+import { router } from "expo-router";
 
 export default function DadosFarmacia() {
   const { setBackIndicator } = useHeader();
@@ -37,6 +38,7 @@ export default function DadosFarmacia() {
       });
 
       showToast("Produto cadastrado com sucesso!", "success");
+      router.navigate("produtos");
     } catch (error: any) {
       showToast(error.response.data.message, "error");
     } finally {
@@ -56,7 +58,7 @@ export default function DadosFarmacia() {
 
   return (
     <ThemedView style={styles.container}>
-      <FormProduto title="Cadastrar produto" onSubmit={onSubmit} />
+      <FormProduto title="Editar produto" onSubmit={onSubmit} />
     </ThemedView>
   );
 }

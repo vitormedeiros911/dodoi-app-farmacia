@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Image } from "react-native";
+import { Image, ImageSourcePropType } from "react-native";
 
 type ImageWithFallbackProps = {
-  source: { uri?: string } | number;
+  source: { uri?: string } | number | null;
   fallbackSource: any;
   style?: any;
 };
@@ -12,10 +12,11 @@ const ImageWithFallback = React.memo(function ({
   fallbackSource,
   style,
 }: ImageWithFallbackProps) {
-  const [imageSource, setImageSource] = useState(source);
+  const [imageSource, setImageSource] =
+    useState<ImageSourcePropType>(fallbackSource);
 
   useEffect(() => {
-    if (typeof source === "object" && source.uri) {
+    if (typeof source === "object" && source?.uri) {
       if (!source.uri.trim()) {
         setImageSource(fallbackSource);
       } else {
@@ -33,7 +34,9 @@ const ImageWithFallback = React.memo(function ({
       source={imageSource}
       style={style}
       onError={() => {
-        if (imageSource !== fallbackSource) setImageSource(fallbackSource);
+        if (imageSource !== fallbackSource) {
+          setImageSource(fallbackSource);
+        }
       }}
     />
   );
