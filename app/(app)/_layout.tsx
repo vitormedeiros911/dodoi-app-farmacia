@@ -2,13 +2,14 @@ import Header from "@/components/Header";
 import Loading from "@/components/Loading";
 import { HeaderProvider } from "@/contexts/HeaderContext";
 import { UserDto } from "@/dto/UserDto";
+import { useAuth } from "@/hooks/useAuth";
 import { useHeader } from "@/hooks/useHeader";
 import { storageUserGet } from "@/storage/storageUser";
 import { router, Slot } from "expo-router";
 import React, { useEffect, useState } from "react";
 
 export default function AppLayout() {
-  const [loading, setLoading] = useState(true);
+  const { isLoading } = useAuth();
   const [user, setUser] = useState({} as UserDto);
   const { isVisible } = useHeader();
 
@@ -22,15 +23,13 @@ export default function AppLayout() {
         setUser(session?.user as UserDto);
       } catch (error) {
         router.replace("/login");
-      } finally {
-        setLoading(false);
       }
     }
 
     checkUser();
   }, []);
 
-  if (loading) return <Loading />;
+  if (isLoading) return <Loading />;
 
   return (
     <HeaderProvider>

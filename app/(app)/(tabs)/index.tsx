@@ -1,10 +1,5 @@
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+import { Redirect } from "expo-router";
 
-export default function Index() {
-  return (
-    <ThemedView>
-      <ThemedText>Index</ThemedText>
-    </ThemedView>
-  );
+export default function index() {
+  return <Redirect href={"/pedidos"} />;
 }

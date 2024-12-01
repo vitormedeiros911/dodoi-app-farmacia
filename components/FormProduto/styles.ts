@@ -52,5 +52,6 @@ export const createStyles = (colorScheme: ColorSchemeName) =>
       width: 200,
       height: 200,
       borderRadius: 10,
+      marginBottom: 20,
     },
   });

@@ -16,6 +16,7 @@ export type AuthContextDataProps = {
   signIn: () => void;
   signOut: () => void;
   updateSession: (newSession: SessionStorageDto) => Promise<void>;
+  isLoading: boolean;
 };
 
 type AuthContextProviderProps = {
@@ -30,7 +31,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [session, setSession] = useState<SessionStorageDto>(
     {} as SessionStorageDto
   );
-
+  const [isLoading, setIsLoading] = useState(true);
   const { startLoading, stopLoading } = useLoading();
 
   async function updateSession(newSession: SessionStorageDto) {
@@ -104,6 +105,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
           );
       } else router.navigate("/(app)/(tabs)");
     } catch (error) {
+      console.log(error);
       if (axios.isAxiosError(error)) {
         const errorMessage =
           error.response?.data?.message || "Não foi possível realizar o login.";
@@ -139,12 +141,19 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   }
 
   useEffect(() => {
-    loadUserData();
-    configureAuthInterceptor(signOut);
+    const init = async () => {
+      await loadUserData();
+      configureAuthInterceptor(signOut);
+      setIsLoading(false);
+    };
+
+    init();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ session, signIn, signOut, updateSession }}>
+    <AuthContext.Provider
+      value={{ session, signIn, signOut, updateSession, isLoading }}
+    >
       {children}
     </AuthContext.Provider>
   );
