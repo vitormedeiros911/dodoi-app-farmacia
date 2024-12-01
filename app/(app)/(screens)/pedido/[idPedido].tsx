@@ -52,6 +52,32 @@ export default function Pedidos() {
     }
   };
 
+  const handleAceitarPedido = async () => {
+    try {
+      startLoading();
+      await api.patch(`pedido/${idPedido}/aceitar`);
+      showToast("Pedido aceito com sucesso!", "success");
+      await getPedido();
+    } catch (error: any) {
+      showToast(error.response.data.message, "error");
+    } finally {
+      stopLoading();
+    }
+  };
+
+  const handleCancelarPedido = async () => {
+    try {
+      startLoading();
+      await api.patch(`pedido/${idPedido}/cancelar`);
+      showToast("Pedido cancelado com sucesso!", "success");
+      await getPedido();
+    } catch (error: any) {
+      showToast(error.response.data.message, "error");
+    } finally {
+      stopLoading();
+    }
+  };
+
   const handleRefresh = async () => {
     setRefreshing(true);
     await getPedido();
@@ -112,12 +138,30 @@ export default function Pedidos() {
       />
 
       <ThemedView style={styles.footer}>
-        <TouchableOpacity onPress={() => {}} style={styles.cancelButton}>
-          <ThemedText style={styles.buttonText}>Cancelar pedido</ThemedText>
-        </TouchableOpacity>
+        +++
         {pedido.status === "PENDENTE" && (
-          <TouchableOpacity onPress={() => {}} style={styles.acceptButton}>
-            <ThemedText style={styles.buttonText}>Aceitar pedido</ThemedText>
+          <>
+            <TouchableOpacity
+              onPress={handleCancelarPedido}
+              style={styles.cancelButton}
+            >
+              <ThemedText style={styles.buttonText}>Cancelar pedido</ThemedText>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={handleAceitarPedido}
+              style={styles.acceptButton}
+            >
+              <ThemedText style={styles.buttonText}>Aceitar pedido</ThemedText>
+            </TouchableOpacity>
+          </>
+        )}
+        {pedido.status === "EM_SEPARACAO" && (
+          <TouchableOpacity
+            onPress={handleAceitarPedido}
+            style={styles.acceptButton}
+          >
+            <ThemedText style={styles.buttonText}>Iniciar entrega</ThemedText>
           </TouchableOpacity>
         )}
       </ThemedView>
