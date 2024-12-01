@@ -54,4 +54,9 @@ export const createStyles = (colorScheme: ColorSchemeName) =>
       borderRadius: 10,
       marginBottom: 20,
     },
+
+    textArea: {
+      alignItems: "flex-start",
+      minHeight: 150,
+    },
   });

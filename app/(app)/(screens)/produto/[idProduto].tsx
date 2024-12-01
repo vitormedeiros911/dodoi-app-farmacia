@@ -55,10 +55,11 @@ export default function EditarProduto() {
         quantidadeDisponivel: +data.quantidadeDisponivel,
         urlImagem: data.urlImagem,
         idFarmacia: session.user.idFarmacia,
+        categoria: data.categoria,
       });
 
       showToast("Produto atualizado com sucesso!", "success");
-      router.navigate("produtos");
+      router.navigate("/produtos");
     } catch (error: any) {
       showToast(error.response.data.message, "error");
     } finally {

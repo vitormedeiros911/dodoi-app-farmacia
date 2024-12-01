@@ -21,8 +21,9 @@ const ThemedInput = forwardRef<TextInput, ThemedInputProps>(
           ref={ref}
           style={styles.input}
           {...rest}
-          multiline={false}
-          numberOfLines={1}
+          multiline={rest.multiline ?? false}
+          numberOfLines={rest.numberOfLines ?? 1}
+          scrollEnabled={rest.multiline}
           placeholderTextColor={Colors[colorScheme ?? "light"].lightText}
         />
       </ThemedView>

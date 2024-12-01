@@ -1,3 +1,5 @@
+import { CategoriaEnum } from "@/enum/categoria.enum";
+
 export interface IProduto {
   id: string;
   nome: string;
@@ -5,4 +7,5 @@ export interface IProduto {
   precoUnitario: number;
   descricao: string;
   quantidadeDisponivel: number;
+  categoria: CategoriaEnum;
 }

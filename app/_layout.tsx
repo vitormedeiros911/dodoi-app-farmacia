@@ -32,17 +32,19 @@ export default function RootLayout() {
   if (!loaded) return <Loading />;
 
   return (
-    <GestureHandlerRootView>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <RootSiblingParent>
-          <LoadingProvider>
-            <AuthContextProvider>
-              <LoadingOverlay />
+    <RootSiblingParent>
+      <GestureHandlerRootView>
+        <LoadingProvider>
+          <LoadingOverlay />
+          <AuthContextProvider>
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
               <Slot />
-            </AuthContextProvider>
-          </LoadingProvider>
-        </RootSiblingParent>
-      </ThemeProvider>
-    </GestureHandlerRootView>
+            </ThemeProvider>
+          </AuthContextProvider>
+        </LoadingProvider>
+      </GestureHandlerRootView>
+    </RootSiblingParent>
   );
 }

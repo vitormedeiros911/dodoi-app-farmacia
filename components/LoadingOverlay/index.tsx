@@ -1,4 +1,3 @@
-// components/LoadingOverlay.tsx
 import { Colors } from "@/constants/Colors";
 import { useLoading } from "@/hooks/useLoading";
 import React from "react";

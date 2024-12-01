@@ -38,7 +38,7 @@ export default function DadosFarmacia() {
       });
 
       showToast("Produto cadastrado com sucesso!", "success");
-      router.navigate("produtos");
+      router.navigate("/produtos");
     } catch (error: any) {
       showToast(error.response.data.message, "error");
     } finally {
@@ -58,7 +58,7 @@ export default function DadosFarmacia() {
 
   return (
     <ThemedView style={styles.container}>
-      <FormProduto title="Editar produto" onSubmit={onSubmit} />
+      <FormProduto title="Cadastrar produto" onSubmit={onSubmit} />
     </ThemedView>
   );
 }
