@@ -209,7 +209,7 @@ export default function Produtos() {
               style={styles.listItemImage}
             />
             <View style={styles.listItemDescription}>
-              <ThemedText style={styles.detailsTitle}>
+              <ThemedText style={styles.detailsTitle} numberOfLines={1}>
                 {produto.nome}
               </ThemedText>
 

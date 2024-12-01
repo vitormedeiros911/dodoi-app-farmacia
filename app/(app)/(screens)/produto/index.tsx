@@ -35,6 +35,7 @@ export default function DadosFarmacia() {
         quantidadeDisponivel: +data.quantidadeDisponivel,
         urlImagem: data.urlImagem,
         idFarmacia: session.user.idFarmacia,
+        categoria: data.categoria,
       });
 
       showToast("Produto cadastrado com sucesso!", "success");

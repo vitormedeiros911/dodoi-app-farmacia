@@ -1,3 +1,4 @@
+import defaultImg from "@/assets/images/remedioGenericoImg.jpg";
 import ScrollView from "@/components/ScrollView";
 import ThemedInput from "@/components/ThemedInput";
 import { ThemedText } from "@/components/ThemedText";
@@ -52,7 +53,7 @@ export default function FormProduto({
 }: FormProdutoProps) {
   const colorScheme = useColorScheme();
   const styles = createStyles(colorScheme);
-  const [source, setSource] = useState(produto?.urlImagem);
+  const [source, setSource] = useState(defaultImg);
 
   const {
     control,
@@ -66,8 +67,10 @@ export default function FormProduto({
     if (clearErrors && setClearErrors) setClearErrors(() => clearErrorsForm);
 
     if (produto) {
-      if (isValidUrl(produto.urlImagem)) setSource(produto.urlImagem);
-      else setSource("");
+      if (isValidUrl(produto.urlImagem))
+        setSource({
+          uri: produto.urlImagem,
+        });
 
       setValue("nome", produto.nome);
       setValue("descricao", produto.descricao);
@@ -88,8 +91,8 @@ export default function FormProduto({
 
         <ThemedText style={styles.label}>Foto do produto</ThemedText>
         <ImageWithFallback
-          source={{ uri: source }}
-          fallbackSource={require("@/assets/images/remedioGenericoImg.jpg")}
+          source={source}
+          fallbackSource={defaultImg}
           style={styles.image}
         />
 
@@ -101,11 +104,14 @@ export default function FormProduto({
               <ThemedInput
                 value={value}
                 onChangeText={(text) => {
-                  if (isValidUrl(text)) setSource(text);
-                  else setSource("");
+                  if (isValidUrl(text))
+                    setSource({
+                      uri: text,
+                    });
 
                   onChange(text);
                 }}
+                maxLength={500}
                 placeholder="Digite a URL da imagem"
               />
             </ThemedView>
@@ -121,10 +127,7 @@ export default function FormProduto({
             <ThemedView>
               <ThemedInput
                 value={value}
-                onChangeText={(text) => {
-                  setSource(text);
-                  onChange(text);
-                }}
+                onChangeText={onChange}
                 placeholder="Digite o nome do produto"
               />
             </ThemedView>
