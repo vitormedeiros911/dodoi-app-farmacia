@@ -8,6 +8,7 @@ import { api } from "@/services/api";
 import { formatBRLFromCents } from "@/utils/formatBRL";
 import { formatDateTime } from "@/utils/formatDate";
 import { showToast } from "@/utils/showToast";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -112,7 +113,10 @@ export default function PedidosTab({ status, title }: Props) {
         style={styles.list}
         showsVerticalScrollIndicator={false}
         renderItem={({ item: pedido }) => (
-          <MemoizedListItem onPress={() => {}} style={styles.listItem}>
+          <MemoizedListItem
+            onPress={() => router.navigate(`/pedido/${pedido.id}`)}
+            style={styles.listItem}
+          >
             <ThemedText style={styles.detailsTitle}>
               #{pedido.codigo} - {formatDateTime(pedido.createdAt, true)}
             </ThemedText>

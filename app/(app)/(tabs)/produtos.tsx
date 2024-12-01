@@ -40,16 +40,18 @@ export default function Produtos() {
   const [refreshing, setRefreshing] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [produtos, setProdutos] = useState<IProduto[]>([]);
-  const { startLoading, stopLoading } = useLoading();
-  const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
-  const { session } = useAuth();
   const [busca, setBusca] = useState("");
+  const [page, setPage] = useState(0);
+
+  const { startLoading, stopLoading } = useLoading();
+  const { session } = useAuth();
   const { setHeaderContent } = useHeader();
-  const limit = 10;
 
   const colorScheme = useColorScheme();
   const styles = createColorScheme(colorScheme);
+
+  const limit = 10;
 
   const getProdutos = async (
     page: number = 0,

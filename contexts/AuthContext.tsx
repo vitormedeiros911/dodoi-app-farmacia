@@ -105,7 +105,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
           );
       } else router.navigate("/(app)/(tabs)");
     } catch (error) {
-      console.log(error);
       if (axios.isAxiosError(error)) {
         const errorMessage =
           error.response?.data?.message || "Não foi possível realizar o login.";
