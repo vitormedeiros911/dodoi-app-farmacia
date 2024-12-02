@@ -47,15 +47,6 @@ export default function Header({ user }: HeaderProps) {
             </ThemedText>
           </ThemedView>
         )}
-        <ThemedView style={styles.menuItens}>
-          <TouchableOpacity>
-            <Ionicons
-              name="notifications-outline"
-              size={24}
-              color={Colors[colorScheme ?? "light"].tint}
-            />
-          </TouchableOpacity>
-        </ThemedView>
       </ThemedView>
       {headerContent}
     </ThemedView>
