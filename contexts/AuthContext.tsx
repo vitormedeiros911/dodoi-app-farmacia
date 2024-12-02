@@ -140,9 +140,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
     if (userLogged?.token && userLogged?.user?.id) {
       setSession(userLogged);
-      oneSignalInitialize();
-      if (userLogged.user.idFarmacia)
-        oneSignalRegisterUser(userLogged.user.idFarmacia);
+      oneSignalRegisterUser(userLogged.user.idFarmacia);
     } else {
       setSession({} as SessionStorageDto);
       await AsyncStorage.removeItem(USER_STORAGE);

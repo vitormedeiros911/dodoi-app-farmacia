@@ -1,5 +1,5 @@
-import googleIcon from "@/assets/images/google-icon.png";
 import farmaciaBg from "@/assets/images/farmaciaBg.jpg";
+import googleIcon from "@/assets/images/google-icon.png";
 import logo from "@/assets/images/logo.png";
 import Button from "@/components/Button";
 import { useAuth } from "@/hooks/useAuth";
