@@ -2,6 +2,7 @@ import Loading from "@/components/Loading";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import { AuthContextProvider } from "@/contexts/AuthContext";
 import { LoadingProvider } from "@/contexts/LoadingContext";
+import { oneSignalInitialize } from "@/lib/oneSignalHelper";
 import {
   DarkTheme,
   DefaultTheme,
@@ -28,6 +29,10 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
+
+  useEffect(() => {
+    oneSignalInitialize();
+  }, []);
 
   if (!loaded) return <Loading />;
 

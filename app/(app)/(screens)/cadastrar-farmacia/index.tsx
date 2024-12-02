@@ -12,6 +12,7 @@ import { useColorScheme } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { createStyles } from "./styles";
+import { oneSignalRegisterUser } from "@/lib/oneSignalHelper";
 
 export default function CadastrarFarmacia() {
   const { setIsVisible } = useHeader();
@@ -44,6 +45,7 @@ export default function CadastrarFarmacia() {
         token: session.token,
       };
 
+      oneSignalRegisterUser(id);
       await updateSession(newSession);
 
       showToast("Farmácia cadastrada com sucesso!", "success");

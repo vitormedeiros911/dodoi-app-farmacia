@@ -69,7 +69,7 @@ export default function MeusDados() {
         setValue("uf", usuarioData.endereco.uf);
       }
     } catch (error: any) {
-      showToast(error.response?.data?.message, "error");
+      showToast(error.response?.data.message, "error");
     }
   };
 
@@ -99,7 +99,7 @@ export default function MeusDados() {
 
       showToast("Dados atualizados com sucesso!", "success");
     } catch (error: any) {
-      showToast(error.response?.data?.message, "error");
+      showToast(error.response?.data.message, "error");
     } finally {
       stopLoading();
     }

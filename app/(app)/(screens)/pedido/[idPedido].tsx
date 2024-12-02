@@ -51,9 +51,6 @@ export default function Pedidos() {
       const response = await api.get(`pedido/${idPedido}`);
 
       setPedido(response.data);
-      setStatusPedido(
-        pedido.historicoStatus[pedido.historicoStatus.length - 1].status
-      );
     } catch (error: any) {
       showToast(error.response?.data?.message, "error");
     }
@@ -66,7 +63,7 @@ export default function Pedidos() {
       showToast("Pedido aceito com sucesso!", "success");
       await getPedido();
     } catch (error: any) {
-      showToast(error.response?.data?.message, "error");
+      showToast(error.response?.data.message, "error");
     } finally {
       stopLoading();
     }
@@ -79,7 +76,7 @@ export default function Pedidos() {
       showToast("Pedido cancelado com sucesso!", "success");
       await getPedido();
     } catch (error: any) {
-      showToast(error.response?.data?.message, "error");
+      showToast(error.response?.data.message, "error");
     } finally {
       stopLoading();
     }
@@ -100,6 +97,14 @@ export default function Pedidos() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (pedido.historicoStatus) {
+      const status =
+        pedido.historicoStatus[pedido.historicoStatus.length - 1].status;
+      setStatusPedido(status);
+    }
+  }, [pedido]);
 
   useFocusEffect(
     useCallback(() => {

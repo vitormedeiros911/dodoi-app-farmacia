@@ -30,7 +30,7 @@ export default function DadosFarmacia() {
 
       setFarmacia(response.data);
     } catch (error: any) {
-      showToast(error.response?.data?.message, "error");
+      showToast(error.response?.data.message, "error");
     }
   };
 
@@ -50,7 +50,7 @@ export default function DadosFarmacia() {
 
       showToast("Farmácia atualizada com sucesso!", "success");
     } catch (error: any) {
-      showToast(error.response?.data?.message, "error");
+      showToast(error.response?.data.message, "error");
     } finally {
       stopLoading();
     }
