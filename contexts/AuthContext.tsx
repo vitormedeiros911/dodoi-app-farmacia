@@ -14,7 +14,6 @@ import axios from "axios";
 import { router } from "expo-router";
 import { createContext, useEffect, useState } from "react";
 import { Alert } from "react-native";
-import { OneSignal } from "react-native-onesignal";
 
 export type AuthContextDataProps = {
   session: SessionStorageDto;
@@ -110,7 +109,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
               },
             ]
           );
-      } else router.navigate("/(app)/(tabs)");
+      } else if (access_token) router.navigate("/(app)/(tabs)");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const errorMessage =
