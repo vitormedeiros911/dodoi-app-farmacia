@@ -49,7 +49,7 @@ export default function Produtos() {
   const { setHeaderContent } = useHeader();
 
   const colorScheme = useColorScheme();
-  const styles = createColorScheme(colorScheme);
+  const styles = createStyles(colorScheme);
 
   const limit = 10;
 
@@ -237,7 +237,7 @@ export default function Produtos() {
   );
 }
 
-const createColorScheme = (colorScheme: ColorSchemeName) =>
+const createStyles = (colorScheme: ColorSchemeName) =>
   StyleSheet.create({
     container: {
       flex: 1,

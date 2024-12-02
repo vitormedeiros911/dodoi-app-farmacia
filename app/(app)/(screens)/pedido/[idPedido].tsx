@@ -15,7 +15,6 @@ import { createColorScheme } from "./styles";
 
 interface IPedido {
   id: string;
-  status: string;
   total: number;
   codigo: string;
   createdAt: Date;
@@ -26,6 +25,10 @@ interface IPedido {
     quantidade: number;
     urlImagem: string;
   }[];
+  historicoStatus: {
+    status: string;
+    data: Date;
+  }[];
 }
 
 const MemoizedListItem = React.memo(ListItem);
@@ -34,6 +37,7 @@ const MemoizedImageWithFallback = React.memo(ImageWithFallback);
 export default function Pedidos() {
   const [refreshing, setRefreshing] = useState(false);
   const [pedido, setPedido] = useState<IPedido>({} as IPedido);
+  const [statusPedido, setStatusPedido] = useState("");
 
   const colorScheme = useColorScheme();
   const styles = createColorScheme(colorScheme);
@@ -47,8 +51,11 @@ export default function Pedidos() {
       const response = await api.get(`pedido/${idPedido}`);
 
       setPedido(response.data);
+      setStatusPedido(
+        pedido.historicoStatus[pedido.historicoStatus.length - 1].status
+      );
     } catch (error: any) {
-      showToast(error.response.data.message, "error");
+      showToast(error.response?.data?.message, "error");
     }
   };
 
@@ -59,7 +66,7 @@ export default function Pedidos() {
       showToast("Pedido aceito com sucesso!", "success");
       await getPedido();
     } catch (error: any) {
-      showToast(error.response.data.message, "error");
+      showToast(error.response?.data?.message, "error");
     } finally {
       stopLoading();
     }
@@ -72,7 +79,7 @@ export default function Pedidos() {
       showToast("Pedido cancelado com sucesso!", "success");
       await getPedido();
     } catch (error: any) {
-      showToast(error.response.data.message, "error");
+      showToast(error.response?.data?.message, "error");
     } finally {
       stopLoading();
     }
@@ -122,7 +129,7 @@ export default function Pedidos() {
               style={styles.listItemImage}
             />
             <View style={styles.listItemDescription}>
-              <ThemedText style={styles.detailsTitle}>
+              <ThemedText style={styles.detailsTitle} numberOfLines={3}>
                 {produto.nomeProduto}
               </ThemedText>
 
@@ -138,8 +145,7 @@ export default function Pedidos() {
       />
 
       <ThemedView style={styles.footer}>
-        +++
-        {pedido.status === "PENDENTE" && (
+        {statusPedido === "PENDENTE" && (
           <>
             <TouchableOpacity
               onPress={handleCancelarPedido}
@@ -156,7 +162,7 @@ export default function Pedidos() {
             </TouchableOpacity>
           </>
         )}
-        {pedido.status === "EM_SEPARACAO" && (
+        {statusPedido === "EM_SEPARACAO" && (
           <TouchableOpacity
             onPress={handleAceitarPedido}
             style={styles.acceptButton}

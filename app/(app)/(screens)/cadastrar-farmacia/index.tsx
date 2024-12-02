@@ -49,7 +49,7 @@ export default function CadastrarFarmacia() {
       showToast("Farmácia cadastrada com sucesso!", "success");
       router.push("/(app)/(tabs)");
     } catch (error: any) {
-      showToast(error.response.data.message, "error");
+      showToast(error.response?.data?.message, "error");
     } finally {
       stopLoading();
     }

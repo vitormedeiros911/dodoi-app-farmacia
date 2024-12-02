@@ -34,7 +34,7 @@ export default function EditarProduto() {
 
       setProduto(response.data);
     } catch (error: any) {
-      showToast(error.response.data.message, "error");
+      showToast(error.response?.data?.message, "error");
     } finally {
       stopLoading();
     }
@@ -61,7 +61,7 @@ export default function EditarProduto() {
       showToast("Produto atualizado com sucesso!", "success");
       router.navigate("/produtos");
     } catch (error: any) {
-      showToast(error.response.data.message, "error");
+      showToast(error.response?.data?.message, "error");
     } finally {
       stopLoading();
     }

@@ -41,7 +41,7 @@ export default function DadosFarmacia() {
       showToast("Produto cadastrado com sucesso!", "success");
       router.navigate("/produtos");
     } catch (error: any) {
-      showToast(error.response.data.message, "error");
+      showToast(error.response?.data?.message, "error");
     } finally {
       stopLoading();
     }
