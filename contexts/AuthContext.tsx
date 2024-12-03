@@ -156,10 +156,18 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         id: userLogged.user.id,
       });
 
-      const { access_token } = response.data;
+      const { access_token, usuario } = response.data;
+
+      const user = {
+        id: usuario.id,
+        nome: usuario.nome,
+        email: usuario.email,
+        avatar: usuario.urlImagem,
+        idFarmacia: usuario.idFarmacia,
+      };
 
       await updateSession({
-        user: userLogged.user,
+        user,
         token: access_token,
       });
     }
