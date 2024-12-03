@@ -21,6 +21,7 @@ export type AuthContextDataProps = {
   signOut: () => void;
   updateSession: (newSession: SessionStorageDto) => Promise<void>;
   isLoading: boolean;
+  refreshToken: () => Promise<void>;
 };
 
 type AuthContextProviderProps = {
@@ -147,6 +148,23 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     }
   }
 
+  async function refreshToken() {
+    const userLogged = await storageUserGet();
+
+    if (userLogged?.token && userLogged?.user?.id) {
+      const response = await api.post("/auth/refresh-token", {
+        id: userLogged.user.id,
+      });
+
+      const { access_token } = response.data;
+
+      await updateSession({
+        user: userLogged.user,
+        token: access_token,
+      });
+    }
+  }
+
   useEffect(() => {
     const init = async () => {
       await loadUserData();
@@ -159,7 +177,14 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
   return (
     <AuthContext.Provider
-      value={{ session, signIn, signOut, updateSession, isLoading }}
+      value={{
+        session,
+        signIn,
+        signOut,
+        updateSession,
+        isLoading,
+        refreshToken,
+      }}
     >
       {children}
     </AuthContext.Provider>

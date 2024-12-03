@@ -19,7 +19,7 @@ export default function CadastrarFarmacia() {
   const colorScheme = useColorScheme();
   const styles = createStyles(colorScheme);
   const { startLoading, stopLoading } = useLoading();
-  const { session, updateSession } = useAuth();
+  const { refreshToken } = useAuth();
 
   const onSubmit = async (data: FormDataProps) => {
     try {
@@ -37,16 +37,9 @@ export default function CadastrarFarmacia() {
 
       const { id } = response.data;
 
-      const newSession = {
-        user: {
-          ...session.user,
-          idFarmacia: id,
-        },
-        token: session.token,
-      };
+      if (id) await refreshToken();
 
       oneSignalRegisterUser(id);
-      await updateSession(newSession);
 
       showToast("Farmácia cadastrada com sucesso!", "success");
       router.replace("/(app)/(tabs)");
