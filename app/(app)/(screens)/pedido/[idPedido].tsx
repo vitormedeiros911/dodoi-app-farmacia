@@ -5,9 +5,9 @@ import { ThemedView } from "@/components/ThemedView";
 import { useHeader } from "@/hooks/useHeader";
 import { useLoading } from "@/hooks/useLoading";
 import { api } from "@/services/api";
-import { formatBRL } from "@/utils/formatBRL";
+import { formatBRL, formatBRLWithCents } from "@/utils/formatBRL";
 import { showToast } from "@/utils/showToast";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, TouchableOpacity, useColorScheme, View } from "react-native";
 
@@ -18,6 +18,11 @@ interface IPedido {
   total: number;
   codigo: string;
   createdAt: Date;
+  cliente: {
+    nome: string;
+    endereco: string;
+    telefone: string;
+  };
   itens: {
     idProduto: string;
     nomeProduto: string;
@@ -36,11 +41,14 @@ const MemoizedImageWithFallback = React.memo(ImageWithFallback);
 
 export default function Pedidos() {
   const [refreshing, setRefreshing] = useState(false);
-  const [pedido, setPedido] = useState<IPedido>({} as IPedido);
+  const [pedido, setPedido] = useState<IPedido>({
+    codigo: "0000000000",
+    total: 0,
+  } as IPedido);
   const [statusPedido, setStatusPedido] = useState("");
 
   const colorScheme = useColorScheme();
-  const styles = createColorScheme(colorScheme);
+  const styles = createColorScheme(colorScheme, statusPedido);
   const { startLoading, stopLoading } = useLoading();
   const { setBackIndicator } = useHeader();
 
@@ -61,7 +69,7 @@ export default function Pedidos() {
       startLoading();
       await api.patch(`pedido/${idPedido}/aceitar`);
       showToast("Pedido aceito com sucesso!", "success");
-      await getPedido();
+      router.navigate("pedidos");
     } catch (error: any) {
       showToast(error.response?.data.message, "error");
     } finally {
@@ -73,8 +81,20 @@ export default function Pedidos() {
     try {
       startLoading();
       await api.patch(`pedido/${idPedido}/cancelar`);
+      router.navigate("pedidos");
       showToast("Pedido cancelado com sucesso!", "success");
-      await getPedido();
+    } catch (error: any) {
+      showToast(error.response?.data.message, "error");
+    } finally {
+      stopLoading();
+    }
+  };
+
+  const handleIniciarEntrega = async () => {
+    try {
+      startLoading();
+      await api.patch(`pedido/${idPedido}/iniciar-entrega`);
+      router.navigate("pedidos");
     } catch (error: any) {
       showToast(error.response?.data.message, "error");
     } finally {
@@ -117,38 +137,60 @@ export default function Pedidos() {
   );
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText style={styles.title}>#{pedido.codigo}</ThemedText>
-      <FlatList
-        data={pedido.itens}
-        keyExtractor={(item) => item.idProduto}
-        onRefresh={handleRefresh}
-        refreshing={refreshing}
-        style={styles.list}
-        showsVerticalScrollIndicator={false}
-        renderItem={({ item: produto }) => (
-          <MemoizedListItem style={styles.listItem}>
-            <MemoizedImageWithFallback
-              source={{ uri: produto.urlImagem }}
-              fallbackSource={require("@/assets/images/remedioGenericoImg.jpg")}
-              style={styles.listItemImage}
-            />
-            <View style={styles.listItemDescription}>
-              <ThemedText style={styles.detailsTitle} numberOfLines={3}>
-                {produto.nomeProduto}
-              </ThemedText>
+    <>
+      <ThemedView style={styles.container}>
+        <ThemedText style={styles.title}>Pedido #{pedido.codigo}</ThemedText>
 
-              <ThemedText style={styles.detailsText}>
-                Quantidade: {produto.quantidade}
-              </ThemedText>
-              <ThemedText style={styles.detailsText}>
-                {formatBRL(produto.precoUnitario)}
-              </ThemedText>
-            </View>
-          </MemoizedListItem>
-        )}
-      />
+        <ThemedText style={styles.subTitle}>
+          Total: {formatBRLWithCents(pedido.total)}
+        </ThemedText>
 
+        <ThemedText style={styles.subTitle}>Dados do cliente</ThemedText>
+        <ThemedText style={styles.clientInfo}>
+          Nome: {pedido.cliente?.nome}
+        </ThemedText>
+        <ThemedText style={styles.clientInfo}>
+          Endereço: {pedido.cliente?.endereco}
+        </ThemedText>
+        <ThemedText style={styles.clientInfo}>
+          Telefone: {pedido.cliente?.telefone}
+        </ThemedText>
+        <ThemedText style={styles.subTitle}>Produtos</ThemedText>
+        <FlatList
+          data={pedido.itens}
+          keyExtractor={(item) => item.idProduto}
+          onRefresh={handleRefresh}
+          refreshing={refreshing}
+          style={styles.list}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item: produto }) => (
+            <MemoizedListItem style={styles.listItem}>
+              <MemoizedImageWithFallback
+                source={{ uri: produto.urlImagem }}
+                fallbackSource={require("@/assets/images/remedioGenericoImg.jpg")}
+                style={styles.listItemImage}
+              />
+              <View style={styles.listItemDescription}>
+                <ThemedText
+                  style={styles.detailsTitle}
+                  numberOfLines={2}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.8}
+                >
+                  {produto.nomeProduto}
+                </ThemedText>
+
+                <ThemedText style={styles.detailsText}>
+                  Quantidade: {produto.quantidade}
+                </ThemedText>
+                <ThemedText style={styles.detailsText}>
+                  {formatBRL(produto.precoUnitario)}
+                </ThemedText>
+              </View>
+            </MemoizedListItem>
+          )}
+        />
+      </ThemedView>
       <ThemedView style={styles.footer}>
         {statusPedido === "PENDENTE" && (
           <>
@@ -169,13 +211,18 @@ export default function Pedidos() {
         )}
         {statusPedido === "EM_SEPARACAO" && (
           <TouchableOpacity
-            onPress={handleAceitarPedido}
-            style={styles.acceptButton}
+            onPress={handleIniciarEntrega}
+            style={[styles.acceptButton, { alignSelf: "flex-end" }]}
           >
             <ThemedText style={styles.buttonText}>Iniciar entrega</ThemedText>
           </TouchableOpacity>
         )}
+        {statusPedido === "ENVIADO" && (
+          <ThemedText style={styles.footerText}>
+            Pedido enviado para entrega
+          </ThemedText>
+        )}
       </ThemedView>
-    </ThemedView>
+    </>
   );
 }

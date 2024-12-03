@@ -5,7 +5,7 @@ import { Colors } from "@/constants/Colors";
 import { useAuth } from "@/hooks/useAuth";
 import { useLoading } from "@/hooks/useLoading";
 import { api } from "@/services/api";
-import { formatBRLFromCents } from "@/utils/formatBRL";
+import { formatBRLWithCents } from "@/utils/formatBRL";
 import { formatDateTime } from "@/utils/formatDate";
 import { showToast } from "@/utils/showToast";
 import { router } from "expo-router";
@@ -103,6 +103,8 @@ export default function PedidosTab({ status, title }: Props) {
   return (
     <ThemedView style={styles.container}>
       <ThemedText style={styles.title}>{title}</ThemedText>
+      <ThemedText style={styles.subTitle}>Total: {total} pedidos</ThemedText>
+
       <FlatList
         data={pedidos}
         keyExtractor={(item) => item.id}
@@ -124,7 +126,7 @@ export default function PedidosTab({ status, title }: Props) {
               Situação: {pedido.status}
             </ThemedText>
             <ThemedText style={styles.detailsText}>
-              {formatBRLFromCents(pedido.total)}
+              {formatBRLWithCents(pedido.total)}
             </ThemedText>
           </MemoizedListItem>
         )}
@@ -148,12 +150,12 @@ const createColorScheme = (colorScheme: ColorSchemeName) =>
     container: {
       flex: 1,
       backgroundColor: Colors[colorScheme ?? "light"].background,
+      padding: 20,
     },
 
     list: {
       flex: 1,
-      paddingHorizontal: 20,
-      paddingBottom: 20,
+      marginTop: 10,
     },
 
     listItem: {
@@ -163,8 +165,10 @@ const createColorScheme = (colorScheme: ColorSchemeName) =>
     title: {
       fontSize: 24,
       fontWeight: "bold",
-      marginVertical: 20,
-      marginLeft: 20,
+    },
+
+    subTitle: {
+      fontSize: 16,
     },
 
     detailsTitle: {

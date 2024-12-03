@@ -1,17 +1,32 @@
 import { Colors } from "@/constants/Colors";
 import { ColorSchemeName, StyleSheet } from "react-native";
 
-export const createColorScheme = (colorScheme: ColorSchemeName) =>
+export const createColorScheme = (
+  colorScheme: ColorSchemeName,
+  statusPedido: string
+) =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: Colors[colorScheme ?? "light"].background,
+      padding: 20,
+    },
+
+    subTitle: {
+      fontSize: 16,
+      marginTop: 10,
+      fontWeight: "bold",
+    },
+
+    clientInfo: {
+      fontSize: 14,
+      lineHeight: 18,
+      color: Colors[colorScheme ?? "light"].lightText,
     },
 
     list: {
       flex: 1,
-      paddingHorizontal: 20,
-      paddingBottom: 20,
+      marginTop: 10,
     },
 
     listItem: {
@@ -21,8 +36,8 @@ export const createColorScheme = (colorScheme: ColorSchemeName) =>
     },
 
     listItemImage: {
-      width: 80,
-      height: 80,
+      width: 90,
+      height: 90,
       borderRadius: 10,
     },
 
@@ -34,17 +49,17 @@ export const createColorScheme = (colorScheme: ColorSchemeName) =>
     title: {
       fontSize: 24,
       fontWeight: "bold",
-      marginVertical: 20,
-      marginLeft: 20,
     },
 
     detailsTitle: {
       fontSize: 16,
       fontWeight: "bold",
+      lineHeight: 20,
     },
 
     detailsText: {
       fontSize: 14,
+      lineHeight: 20,
     },
 
     footer: {
@@ -54,10 +69,18 @@ export const createColorScheme = (colorScheme: ColorSchemeName) =>
       borderTopColor: Colors[colorScheme ?? "light"].border,
       flexDirection: "row",
       alignItems: "center",
-      justifyContent: "space-between",
+      justifyContent:
+        statusPedido === "EM_SEPARACAO" || "ENVIADO"
+          ? "flex-end"
+          : "space-between",
       position: "relative",
       bottom: 0,
       width: "100%",
+    },
+
+    footerText: {
+      fontSize: 14,
+      color: Colors[colorScheme ?? "light"].lightText,
     },
 
     cancelButton: {
@@ -65,6 +88,7 @@ export const createColorScheme = (colorScheme: ColorSchemeName) =>
       paddingVertical: 12,
       paddingHorizontal: 20,
       borderRadius: 8,
+      marginRight: "auto",
     },
 
     acceptButton: {
