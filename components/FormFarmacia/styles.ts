@@ -47,4 +47,11 @@ export const createStyles = (colorScheme: ColorSchemeName) =>
       fontSize: 12,
       marginBottom: 5,
     },
+
+    image: {
+      width: 200,
+      height: 200,
+      borderRadius: 10,
+      marginBottom: 20,
+    },
   });

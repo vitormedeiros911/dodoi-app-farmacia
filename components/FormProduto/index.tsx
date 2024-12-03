@@ -5,6 +5,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { CategoriaEnum } from "@/enum/categoria.enum";
 import { IProduto } from "@/interfaces/produto.interface";
+import { isValidURL } from "@/utils/isValidURL";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { TouchableOpacity, useColorScheme } from "react-native";
@@ -33,15 +34,6 @@ type FormProdutoProps = {
   setClearErrors?: (clearErrors: () => void) => void;
 };
 
-const isValidUrl = (url: string) => {
-  try {
-    new URL(url);
-    return true;
-  } catch (_) {
-    return false;
-  }
-};
-
 export default function FormProduto({
   onSubmit,
   title,
@@ -51,9 +43,10 @@ export default function FormProduto({
   clearErrors,
   setClearErrors,
 }: FormProdutoProps) {
+  const [source, setSource] = useState(defaultImg);
+
   const colorScheme = useColorScheme();
   const styles = createStyles(colorScheme);
-  const [source, setSource] = useState(defaultImg);
 
   const {
     control,
@@ -67,7 +60,7 @@ export default function FormProduto({
     if (clearErrors && setClearErrors) setClearErrors(() => clearErrorsForm);
 
     if (produto) {
-      if (isValidUrl(produto.urlImagem)) {
+      if (isValidURL(produto.urlImagem)) {
         setValue("urlImagem", produto.urlImagem);
 
         setSource({
@@ -91,22 +84,27 @@ export default function FormProduto({
       <ThemedView style={styles.form}>
         <ThemedText style={styles.title}>{title}</ThemedText>
 
-        <ThemedText style={styles.label}>Foto do produto</ThemedText>
         <ImageWithFallback
           source={source}
           fallbackSource={defaultImg}
           style={styles.image}
         />
 
+        <ThemedText style={styles.label}>Foto do produto*</ThemedText>
         <Controller
           control={control}
           name="urlImagem"
+          rules={{
+            required: "A URL da imagem é obrigatória.",
+            validate: (value: string) =>
+              isValidURL(value) || "A URL da imagem é inválida.",
+          }}
           render={({ field: { onChange, value } }) => (
             <ThemedView>
               <ThemedInput
                 value={value}
                 onChangeText={(text) => {
-                  if (isValidUrl(text))
+                  if (isValidURL(text))
                     setSource({
                       uri: text,
                     });
@@ -119,6 +117,11 @@ export default function FormProduto({
             </ThemedView>
           )}
         />
+        {errors.urlImagem && (
+          <ThemedText style={styles.error}>
+            {errors.urlImagem.message}
+          </ThemedText>
+        )}
 
         <ThemedText style={styles.label}>Nome*</ThemedText>
         <Controller

@@ -1,14 +1,17 @@
+import defaultImg from "@/assets/images/defaultFarmaciaImg.jpg";
 import ScrollView from "@/components/ScrollView";
 import ThemedInput from "@/components/ThemedInput";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { IFarmacia } from "@/interfaces/farmacia.interface";
+import { isValidURL } from "@/utils/isValidURL";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { TouchableOpacity, useColorScheme } from "react-native";
 import { TextInputMask } from "react-native-masked-text";
 
+import ImageWithFallback from "../ImageWithFallback";
 import { createStyles } from "./styles";
-import { IFarmacia } from "@/interfaces/farmacia.interface";
-import { useEffect } from "react";
 
 export type FormDataProps = {
   nome: string;
@@ -44,6 +47,8 @@ export default function FormFarmacia({
   clearErrors,
   setClearErrors,
 }: FormFarmaciaProps) {
+  const [source, setSource] = useState(defaultImg);
+
   const colorScheme = useColorScheme();
   const styles = createStyles(colorScheme);
 
@@ -59,11 +64,17 @@ export default function FormFarmacia({
     if (clearErrors && setClearErrors) setClearErrors(() => clearErrorsForm);
 
     if (farmacia) {
+      if (isValidURL(farmacia.urlImagem)) {
+        setValue("urlImagem", farmacia.urlImagem);
+
+        setSource({
+          uri: farmacia.urlImagem,
+        });
+      }
       setValue("nome", farmacia.nome);
       setValue("razaoSocial", farmacia.razaoSocial);
       setValue("cnpj", farmacia.cnpj);
       setValue("emailAdmin", farmacia.emailAdmin);
-      setValue("urlImagem", farmacia.urlImagem);
       setValue("cep", farmacia.endereco?.cep);
       setValue("uf", farmacia.endereco?.uf);
       setValue("cidade", farmacia.endereco?.cidade);
@@ -78,6 +89,45 @@ export default function FormFarmacia({
     <ScrollView refreshing={refreshing} onRefresh={onRefresh}>
       <ThemedView style={styles.form}>
         <ThemedText style={styles.title}>{title}</ThemedText>
+
+        <ImageWithFallback
+          source={source}
+          fallbackSource={defaultImg}
+          style={styles.image}
+        />
+
+        <ThemedText style={styles.label}>Foto da farmácia*</ThemedText>
+        <Controller
+          control={control}
+          name="urlImagem"
+          rules={{
+            required: "A URL da imagem é obrigatória.",
+            validate: (value: string) =>
+              isValidURL(value) || "A URL da imagem é inválida.",
+          }}
+          render={({ field: { onChange, value } }) => (
+            <ThemedView>
+              <ThemedInput
+                value={value}
+                onChangeText={(text) => {
+                  if (isValidURL(text))
+                    setSource({
+                      uri: text,
+                    });
+
+                  onChange(text);
+                }}
+                maxLength={500}
+                placeholder="Digite a URL da imagem"
+              />
+            </ThemedView>
+          )}
+        />
+        {errors.urlImagem && (
+          <ThemedText style={styles.error}>
+            {errors.urlImagem.message}
+          </ThemedText>
+        )}
 
         <Controller
           control={control}
@@ -157,27 +207,6 @@ export default function FormFarmacia({
         {errors.emailAdmin && (
           <ThemedText style={styles.error}>
             {errors.emailAdmin.message}
-          </ThemedText>
-        )}
-
-        <Controller
-          control={control}
-          name="urlImagem"
-          rules={{ required: "Disponibilize uma foto para sua farmácia" }}
-          render={({ field: { onChange, value } }) => (
-            <ThemedView>
-              <ThemedText style={styles.label}>Foto*</ThemedText>
-              <ThemedInput
-                value={value}
-                onChangeText={onChange}
-                placeholder="Digite a URL da imagem"
-              />
-            </ThemedView>
-          )}
-        />
-        {errors.urlImagem && (
-          <ThemedText style={styles.error}>
-            {errors.urlImagem.message}
           </ThemedText>
         )}
 

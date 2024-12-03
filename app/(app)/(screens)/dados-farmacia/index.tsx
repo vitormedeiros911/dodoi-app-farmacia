@@ -17,6 +17,7 @@ export default function DadosFarmacia() {
   const [farmacia, setFarmacia] = useState<IFarmacia>({} as IFarmacia);
   const [refreshing, setRefreshing] = useState(false);
   const [clearErrors, setClearErrors] = useState<() => void>(() => () => {});
+
   const { setBackIndicator } = useHeader();
   const { startLoading, stopLoading } = useLoading();
   const { session } = useAuth();
@@ -30,7 +31,7 @@ export default function DadosFarmacia() {
 
       setFarmacia(response.data);
     } catch (error: any) {
-      showToast(error.response?.data.message, "error");
+      showToast(error.response?.data?.message, "error");
     }
   };
 
@@ -87,10 +88,10 @@ export default function DadosFarmacia() {
     <ThemedView style={styles.container}>
       <FormFarmacia
         title="Minha Farmácia"
+        farmacia={farmacia}
         onSubmit={onSubmit}
         refreshing={refreshing}
         onRefresh={handleRefresh}
-        farmacia={farmacia}
         setClearErrors={setClearErrors}
       />
     </ThemedView>

@@ -28,15 +28,11 @@ export default function EditarProduto() {
 
   const getProduto = async () => {
     try {
-      startLoading();
-
       const response = await api.get(`produto/${idProduto}`);
 
       setProduto(response.data);
     } catch (error: any) {
-      showToast(error.response?.data.message, "error");
-    } finally {
-      stopLoading();
+      showToast(error.response?.data?.message, "error");
     }
   };
 
@@ -66,6 +62,7 @@ export default function EditarProduto() {
       stopLoading();
     }
   };
+
   useEffect(() => {
     const fetchProduto = async () => {
       startLoading();
