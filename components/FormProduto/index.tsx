@@ -67,14 +67,16 @@ export default function FormProduto({
     if (clearErrors && setClearErrors) setClearErrors(() => clearErrorsForm);
 
     if (produto) {
-      if (isValidUrl(produto.urlImagem))
+      if (isValidUrl(produto.urlImagem)) {
+        setValue("urlImagem", produto.urlImagem);
+
         setSource({
           uri: produto.urlImagem,
         });
+      }
 
       setValue("nome", produto.nome);
       setValue("descricao", produto.descricao);
-      setValue("urlImagem", produto.urlImagem);
       setValue("precoUnitario", produto.precoUnitario?.toFixed(2));
       setValue(
         "quantidadeDisponivel",
