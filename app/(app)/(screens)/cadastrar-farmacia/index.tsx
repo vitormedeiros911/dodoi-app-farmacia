@@ -49,7 +49,7 @@ export default function CadastrarFarmacia() {
       await updateSession(newSession);
 
       showToast("Farmácia cadastrada com sucesso!", "success");
-      router.push("/(app)/(tabs)");
+      router.replace("/(app)/(tabs)");
     } catch (error: any) {
       showToast(error.response?.data?.message, "error");
     } finally {

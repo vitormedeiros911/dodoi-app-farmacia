@@ -116,7 +116,7 @@ export default function PedidosTab({ status, title }: Props) {
         showsVerticalScrollIndicator={false}
         renderItem={({ item: pedido }) => (
           <MemoizedListItem
-            onPress={() => router.navigate(`/pedido/${pedido.id}`)}
+            onPress={() => router.push(`/pedido/${pedido.id}`)}
             style={styles.listItem}
           >
             <ThemedText style={styles.detailsTitle}>

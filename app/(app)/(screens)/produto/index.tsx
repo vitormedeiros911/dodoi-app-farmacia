@@ -12,7 +12,7 @@ import { useColorScheme } from "react-native";
 import { createStyles } from "./styles";
 import { router } from "expo-router";
 
-export default function DadosFarmacia() {
+export default function DadosProduto() {
   const { setBackIndicator } = useHeader();
   const { startLoading, stopLoading } = useLoading();
   const { session } = useAuth();
@@ -39,7 +39,7 @@ export default function DadosFarmacia() {
       });
 
       showToast("Produto cadastrado com sucesso!", "success");
-      router.navigate("/produtos");
+      router.replace("/produtos");
     } catch (error: any) {
       showToast(error.response?.data?.message, "error");
     } finally {

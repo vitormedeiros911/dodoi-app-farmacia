@@ -59,7 +59,7 @@ export default function EditarProduto() {
       });
 
       showToast("Produto atualizado com sucesso!", "success");
-      router.navigate("/produtos");
+      router.replace("/produtos");
     } catch (error: any) {
       showToast(error.response?.data.message, "error");
     } finally {

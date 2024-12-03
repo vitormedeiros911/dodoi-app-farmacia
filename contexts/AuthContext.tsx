@@ -98,7 +98,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       oneSignalRegisterUser(user.idFarmacia);
 
       if (!usuario.idFarmacia) {
-        router.navigate("/cadastrar-farmacia"),
+        router.replace("/cadastrar-farmacia"),
           Alert.alert(
             "Bem-vindo ao Dodoi!",
             "Como é a primeira vez conosco, precisamos que você cadastre sua farmácia antes de qualquer coisa.",
