@@ -103,7 +103,9 @@ export default function PedidosTab({ status, title }: Props) {
   return (
     <ThemedView style={styles.container}>
       <ThemedText style={styles.title}>{title}</ThemedText>
-      <ThemedText style={styles.subTitle}>Total: {total} pedidos</ThemedText>
+      <ThemedText style={styles.subTitle}>
+        Total: {total} {total === 1 ? "pedido" : "pedidos"}
+      </ThemedText>
 
       <FlatList
         data={pedidos}
@@ -126,7 +128,7 @@ export default function PedidosTab({ status, title }: Props) {
               Situação: {pedido.status}
             </ThemedText>
             <ThemedText style={styles.detailsText}>
-              {formatBRLWithCents(pedido.total)}
+              Total: {formatBRLWithCents(pedido.total)}
             </ThemedText>
           </MemoizedListItem>
         )}
@@ -168,7 +170,7 @@ const createColorScheme = (colorScheme: ColorSchemeName) =>
     },
 
     subTitle: {
-      fontSize: 16,
+      fontSize: 14,
     },
 
     detailsTitle: {

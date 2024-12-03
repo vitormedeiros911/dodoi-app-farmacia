@@ -39,7 +39,7 @@ interface IPedido {
 const MemoizedListItem = React.memo(ListItem);
 const MemoizedImageWithFallback = React.memo(ImageWithFallback);
 
-export default function Pedidos() {
+export default function Pedido() {
   const [refreshing, setRefreshing] = useState(false);
   const [pedido, setPedido] = useState<IPedido>({
     codigo: "0000000000",
